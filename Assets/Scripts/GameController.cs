@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour {
     public AudioClip[] sounds;
     public List<Sprite> gameAnimals = new List<Sprite>();
 
+    private Text textField;
+
     void Awake()
     {
         animals = Resources.LoadAll<Sprite>("Sprites/Animals");
@@ -33,8 +35,14 @@ public class GameController : MonoBehaviour {
 
     void Reload()
     {
+        destroySound();
         AddAnimals();
         AddSound();
+        Invoke("clearText", 2);
+    }
+
+    void clearText()
+    { this.textField.text = "";
     }
 
     void AddAnimals()
@@ -47,16 +55,13 @@ public class GameController : MonoBehaviour {
         correctButtonIndex = randomButtonIndex;
         buttons[correctButtonIndex].image.sprite = animals[randomAnimalIndex];
 
-
         //add wrong animals to the remaining buttons
         for (int i = 0; i < buttons.Length; ++i)
         {
             if (i != correctButtonIndex)
             {
                 int incorrectAnimalIndex;
-                do
-                {
-                    incorrectAnimalIndex = Random.Range(0, animals.Length);
+                do{incorrectAnimalIndex = Random.Range(0, animals.Length);
                 } while (randomAnimalIndex == incorrectAnimalIndex);
 
                 buttons[i].image.sprite = animals[incorrectAnimalIndex];
@@ -73,7 +78,6 @@ public class GameController : MonoBehaviour {
                 correctAnimalSound = snd;
             }
         }
-
     }
 
     void GetButtons()
@@ -88,6 +92,10 @@ public class GameController : MonoBehaviour {
         GameObject soundButtonObject = GameObject.Find("playSound");
         this.soundButton = soundButtonObject.GetComponent<Button>();
         this.soundButton.onClick.AddListener(() => playSound());
+
+        GameObject textObject = GameObject.Find("textField");
+        this.textField = textObject.GetComponent<Text>();
+        clearText();
     }
 
     void AddListeners()
@@ -104,23 +112,29 @@ public class GameController : MonoBehaviour {
         string btnName = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name;
         if (btnName == buttons[correctButtonIndex].name)
         {
-            Debug.Log("You clicked the correct animal");
+           // Debug.Log("You clicked the correct animal");
+            this.textField.text = "You clicked the correct animal";
             Reload();
         }
         else
         {
-            Debug.Log("You clicked the wrong animal");
+           // Debug.Log("You clicked the wrong animal");
+            this.textField.text = "You clicked the wrong animal";
         }
 
     }
 
     void playSound()
     {
-        if (source)
-            Destroy(source);
+        destroySound();
         source = gameObject.AddComponent<AudioSource>();
         source.clip = this.correctAnimalSound;
         source.Play();
+    }
+
+    void destroySound(){
+        if (source)
+            Destroy(source);
     }
 	
 }

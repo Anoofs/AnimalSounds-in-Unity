@@ -15,6 +15,9 @@ public class AddButton : MonoBehaviour {
     [SerializeField]
     private GameObject soundButton;
 
+    [SerializeField]
+    private GameObject displayText;
+
     void Awake()
     {
         GameObject leftAnimal = Instantiate(leftButton);
@@ -28,5 +31,9 @@ public class AddButton : MonoBehaviour {
         GameObject playSoundButton = Instantiate(soundButton);
         playSoundButton.name = "playSound";
         playSoundButton.transform.SetParent(gameField, false);
+
+        GameObject displayTextfield = Instantiate(displayText);
+        displayTextfield.name = "textField";
+        displayTextfield.transform.SetParent(gameField, false);
     }
 }
